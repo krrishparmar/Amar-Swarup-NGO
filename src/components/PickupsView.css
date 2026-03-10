@@ -1,0 +1,146 @@
+.pickups-view { padding: 2rem; }
+
+.view-header { margin-bottom: 1.5rem; }
+
+.view-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.view-subtitle {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: 0.25rem 0 0 0;
+}
+
+.pickup-stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+.pickup-stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  transition: all 0.2s;
+  animation: fadeInUp 0.45s ease forwards;
+  opacity: 0;
+}
+
+.pickup-stat-card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+}
+
+.pickup-stat-icon { font-size: 1.3rem; }
+
+.pickup-stat-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.pickup-stat-label {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.pickup-table-wrap {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.pickup-filter-row {
+  display: flex;
+  gap: 0.3rem;
+  padding: 1.15rem 1.35rem 0.65rem;
+  overflow-x: auto;
+}
+
+.pickup-table-container { overflow-x: auto; padding: 0 0.5rem 0.6rem; }
+
+.pickup-table { width: 100%; border-collapse: collapse; }
+
+.pickup-table th {
+  text-transform: uppercase;
+  font-size: 0.6rem;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  text-align: left;
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+}
+
+.pickup-table td {
+  padding: 0.7rem 1rem;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.pickup-row {
+  transition: background 0.15s;
+  animation: fadeInRow 0.35s ease forwards;
+  opacity: 0;
+}
+.pickup-row:hover { background: rgba(255, 255, 255, 0.02); }
+
+@keyframes fadeInRow {
+  from { opacity: 0; transform: translateX(-6px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.td-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.td-name { font-weight: 600; color: var(--text-primary); }
+.td-weight { font-weight: 600; color: var(--accent); }
+.td-date { font-size: 0.75rem; color: var(--text-muted); }
+
+.td-driver { font-size: 0.75rem; color: var(--text-secondary); }
+.td-driver.unassigned { color: var(--warning); opacity: 0.7; font-style: italic; }
+
+.waste-badge {
+  font-size: 0.68rem;
+  padding: 0.18rem 0.5rem;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 20px;
+  font-size: 0.66rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.location-tag { font-size: 0.75rem; }
+
+@media (max-width: 768px) {
+  .pickups-view { padding: 1rem; }
+  .pickup-stats-row { grid-template-columns: repeat(2, 1fr); }
+}

@@ -1,0 +1,107 @@
+.activity-feed {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  min-width: 280px;
+}
+
+.feed-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.15rem 1.25rem 0.85rem;
+}
+
+.feed-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--success);
+  animation: pulse-teal 2.5s ease-in-out infinite;
+}
+
+@keyframes pulse-teal {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.feed-count {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.feed-list {
+  padding: 0 0.85rem 0.85rem;
+  max-height: 480px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.feed-item {
+  padding: 0.75rem 0.85rem;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  transition: all 0.15s;
+  animation: fadeInFeed 0.35s ease forwards;
+  opacity: 0;
+}
+
+.feed-item:hover {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: var(--border);
+}
+
+@keyframes fadeInFeed {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.feed-item-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.35rem;
+}
+
+.feed-donor { font-weight: 600; color: var(--text-primary); font-size: 0.8rem; }
+.feed-time { font-size: 0.65rem; color: var(--text-muted); }
+
+.feed-item-bottom {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.feed-location { font-size: 0.7rem; color: var(--text-muted); }
+
+.feed-waste {
+  font-size: 0.6rem;
+  padding: 0.12rem 0.45rem;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.feed-weight {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-left: auto;
+}

@@ -1,0 +1,42 @@
+.dashboard {
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+
+.dashboard-main {
+  max-width: 1440px;
+  margin: 0 auto;
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+.bottom-section {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 0;
+  align-items: start;
+  padding: 0 2rem 0 0;
+}
+
+.bottom-section .leaderboard-section {
+  margin-right: 0;
+}
+
+.bottom-section .activity-feed {
+  margin: 2rem 0;
+}
+
+@media (max-width: 1024px) {
+  .bottom-section {
+    grid-template-columns: 1fr;
+    padding: 0;
+  }
+  .bottom-section .activity-feed {
+    margin: 0 2rem 2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .bottom-section .activity-feed {
+    margin: 0 1rem 1rem;
+  }
+}

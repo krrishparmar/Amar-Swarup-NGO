@@ -1,0 +1,147 @@
+.leaderboard-section {
+  margin: 2rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.mvp-card {
+  margin: 0 1.5rem;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius);
+  padding: 1.15rem 1.35rem;
+  position: relative;
+}
+
+.mvp-badge {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--accent);
+  font-weight: 700;
+  margin-bottom: 0.65rem;
+}
+
+.mvp-content {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.mvp-medal { font-size: 2rem; }
+
+.mvp-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.mvp-stats {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+.leaderboard-list {
+  padding: 1rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.donor-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.donor-card:hover {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: var(--border);
+}
+
+.donor-card.top-1 {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: var(--border);
+}
+
+.donor-card.top-2, .donor-card.top-3 {
+  background: rgba(255, 255, 255, 0.015);
+  border-color: rgba(255, 255, 255, 0.04);
+}
+
+.donor-rank { min-width: 36px; display: flex; justify-content: center; }
+.medal { font-size: 1.4rem; }
+
+.rank-number {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.donor-info { flex: 1; min-width: 0; }
+
+.donor-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.donor-name { font-weight: 600; color: var(--text-primary); font-size: 0.85rem; }
+.donor-city { font-size: 0.7rem; color: var(--text-muted); }
+
+.tier-badge {
+  font-size: 0.62rem;
+  padding: 0.18rem 0.5rem;
+  border-radius: 20px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.donor-stats { display: flex; gap: 0.85rem; margin-top: 0.3rem; }
+.stat-kg { font-weight: 700; color: var(--accent); font-size: 0.8rem; }
+.stat-points { font-size: 0.75rem; color: var(--text-muted); }
+
+.progress-bar-container { margin-top: 0.4rem; }
+
+.progress-bar-bg {
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-label {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+  display: block;
+}
+
+.progress-label.max-tier { color: var(--accent); }
+
+@media (max-width: 768px) {
+  .leaderboard-section { margin: 1rem; }
+  .mvp-card { margin: 0 1rem; }
+  .leaderboard-list { padding: 0.85rem; }
+  .donor-card { padding: 0.7rem 0.65rem; }
+}
