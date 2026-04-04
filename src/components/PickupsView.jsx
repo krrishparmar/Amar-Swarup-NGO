@@ -1,20 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { fetchPickups } from '../api';
 import './PickupsView.css';
-
-const allPickups = [
-  { id: 1, donor: 'Rajesh Deshmukh', location: 'Dharampeth', phone: '+91 98XXX XX234', wasteType: 'E-Waste', date: '2025-03-10', time: '10:00 AM', weight: 12.5, status: 'Confirmed', driver: 'Sunil K.' },
-  { id: 2, donor: 'Priya Wankhede', location: 'Sitabuldi', phone: '+91 90XXX XX891', wasteType: 'Plastic', date: '2025-03-10', time: '11:30 AM', weight: 8.2, status: 'In Transit', driver: 'Rahul P.' },
-  { id: 3, donor: 'Amit Gajbhiye', location: 'Manewada', phone: '+91 77XXX XX456', wasteType: 'Paper', date: '2025-03-10', time: '02:00 PM', weight: 22.0, status: 'Completed', driver: 'Vinay M.' },
-  { id: 4, donor: 'Sneha Raut', location: 'Sadar', phone: '+91 88XXX XX321', wasteType: 'Metal', date: '2025-03-10', time: '03:30 PM', weight: 15.7, status: 'Confirmed', driver: 'Amit D.' },
-  { id: 5, donor: 'Vikram Thakre', location: 'Civil Lines', phone: '+91 93XXX XX789', wasteType: 'E-Waste', date: '2025-03-10', time: '04:00 PM', weight: 5.3, status: 'Pending', driver: 'Unassigned' },
-  { id: 6, donor: 'Anita Borkar', location: 'Ramdaspeth', phone: '+91 81XXX XX112', wasteType: 'Mixed', date: '2025-03-11', time: '09:00 AM', weight: 18.9, status: 'Scheduled', driver: 'Sunil K.' },
-  { id: 7, donor: 'Rahul Meshram', location: 'Wardhaman Nagar', phone: '+91 70XXX XX667', wasteType: 'Plastic', date: '2025-03-11', time: '10:30 AM', weight: 9.4, status: 'Cancelled', driver: '—' },
-  { id: 8, donor: 'Deepa Khandelwal', location: 'Laxmi Nagar', phone: '+91 85XXX XX543', wasteType: 'Paper', date: '2025-03-11', time: '01:00 PM', weight: 30.0, status: 'Completed', driver: 'Vinay M.' },
-  { id: 9, donor: 'Suresh Yadav', location: 'Trimurti Nagar', phone: '+91 96XXX XX876', wasteType: 'Metal', date: '2025-03-12', time: '11:00 AM', weight: 7.1, status: 'Scheduled', driver: 'Rahul P.' },
-  { id: 10, donor: 'Kavita Pande', location: 'Pratap Nagar', phone: '+91 73XXX XX998', wasteType: 'E-Waste', date: '2025-03-12', time: '12:30 PM', weight: 14.6, status: 'Pending', driver: 'Unassigned' },
-  { id: 11, donor: 'Nikhil Dongre', location: 'Bajaj Nagar', phone: '+91 82XXX XX145', wasteType: 'Mixed', date: '2025-03-12', time: '03:00 PM', weight: 25.3, status: 'Completed', driver: 'Amit D.' },
-  { id: 12, donor: 'Meena Wasnik', location: 'Hingna', phone: '+91 91XXX XX332', wasteType: 'Plastic', date: '2025-03-13', time: '09:30 AM', weight: 11.8, status: 'Pending', driver: 'Unassigned' },
-];
 
 const statusColors = {
   Pending: { bg: 'rgba(251, 191, 36, 0.12)', text: '#fbbf24', border: 'rgba(251, 191, 36, 0.3)' },
@@ -25,17 +11,39 @@ const statusColors = {
   Cancelled: { bg: 'rgba(239, 68, 68, 0.12)', text: '#f87171', border: 'rgba(239, 68, 68, 0.3)' },
 };
 
-const pickupStats = [
-  { label: "Today's Pickups", value: 18, icon: '📅' },
-  { label: 'In Transit', value: 4, icon: '🚛' },
-  { label: 'Completed Today', value: 11, icon: '✅' },
-  { label: 'Pending Assignment', value: 3, icon: '⏳' },
-];
-
 export default function PickupsView() {
   const [filter, setFilter] = useState('All');
+  const [allPickups, setAllPickups] = useState([]);
+  const [pickupStats, setPickupStats] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const statuses = ['All', 'Pending', 'Scheduled', 'Confirmed', 'In Transit', 'Completed', 'Cancelled'];
+
+  useEffect(() => {
+    async function load() {
+      setLoading(true);
+      try {
+        const data = await fetchPickups();
+        setAllPickups(data.pickups);
+        setPickupStats(data.stats);
+      } catch (err) {
+        console.error('Error loading pickups:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, []);
+
   const filtered = filter === 'All' ? allPickups : allPickups.filter(p => p.status === filter);
+
+  if (loading) {
+    return (
+      <div className="pickups-view fade-in-up" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+        <div style={{ color: 'var(--text-secondary)', fontSize: '1.1rem' }}>Loading pickups...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="pickups-view fade-in-up">

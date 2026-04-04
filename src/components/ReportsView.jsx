@@ -1,33 +1,40 @@
+import { useState, useEffect } from 'react';
+import { fetchReports } from '../api';
 import './ReportsView.css';
 
-const monthlyData = [
-  { month: 'Oct 2024', waste: 1850, pickups: 78, donors: 42 },
-  { month: 'Nov 2024', waste: 2340, pickups: 96, donors: 55 },
-  { month: 'Dec 2024', waste: 2100, pickups: 88, donors: 48 },
-  { month: 'Jan 2025', waste: 2780, pickups: 112, donors: 63 },
-  { month: 'Feb 2025', waste: 3200, pickups: 134, donors: 71 },
-  { month: 'Mar 2025', waste: 3550, pickups: 148, donors: 82 },
-];
-
-const wasteBreakdown = [
-  { type: 'E-Waste', kg: 6420, percent: 25.8, color: '#f59e0b' },
-  { type: 'Plastic', kg: 7850, percent: 31.6, color: '#3b82f6' },
-  { type: 'Paper', kg: 4320, percent: 17.4, color: '#a78bfa' },
-  { type: 'Metal', kg: 3180, percent: 12.8, color: '#6b7280' },
-  { type: 'Mixed', kg: 3080, percent: 12.4, color: '#0d9488' },
-];
-
-const topAreas = [
-  { area: 'Dharampeth', pickups: 34, kg: 420.5 },
-  { area: 'Sitabuldi', pickups: 28, kg: 352.1 },
-  { area: 'Ramdaspeth', pickups: 25, kg: 310.8 },
-  { area: 'Civil Lines', pickups: 22, kg: 278.4 },
-  { area: 'Sadar', pickups: 19, kg: 245.2 },
-];
-
-const maxWaste = Math.max(...monthlyData.map(d => d.waste));
-
 export default function ReportsView() {
+  const [monthlyData, setMonthlyData] = useState([]);
+  const [wasteBreakdown, setWasteBreakdown] = useState([]);
+  const [topAreas, setTopAreas] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      setLoading(true);
+      try {
+        const data = await fetchReports();
+        setMonthlyData(data.monthlyData);
+        setWasteBreakdown(data.wasteBreakdown);
+        setTopAreas(data.topAreas);
+      } catch (err) {
+        console.error('Error loading reports:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="reports-view fade-in-up" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+        <div style={{ color: 'var(--text-secondary)', fontSize: '1.1rem' }}>Loading reports...</div>
+      </div>
+    );
+  }
+
+  const maxWaste = Math.max(...monthlyData.map(d => d.waste));
+
   return (
     <div className="reports-view fade-in-up">
       <div className="view-header">

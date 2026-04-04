@@ -1,35 +1,42 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { fetchDonors } from '../api';
 import { getTierInfo } from '../data/mockData';
 import './DonorsView.css';
 
-const allDonors = [
-  { id: 1, name: 'Rajesh Deshmukh', email: 'rajesh.d@email.com', phone: '+91 98XXX XX234', location: 'Dharampeth', joinDate: '2024-06-15', totalKg: 185.4, pickups: 24, tier: 'champion' },
-  { id: 2, name: 'Deepa Khandelwal', email: 'deepa.k@email.com', phone: '+91 85XXX XX543', location: 'Laxmi Nagar', joinDate: '2024-07-02', totalKg: 162.0, pickups: 19, tier: 'champion' },
-  { id: 3, name: 'Nikhil Dongre', email: 'nikhil.d@email.com', phone: '+91 82XXX XX145', location: 'Bajaj Nagar', joinDate: '2024-05-20', totalKg: 148.7, pickups: 22, tier: 'guardian' },
-  { id: 4, name: 'Anita Borkar', email: 'anita.b@email.com', phone: '+91 81XXX XX112', location: 'Ramdaspeth', joinDate: '2024-08-10', totalKg: 124.3, pickups: 17, tier: 'guardian' },
-  { id: 5, name: 'Sneha Raut', email: 'sneha.r@email.com', phone: '+91 88XXX XX321', location: 'Sadar', joinDate: '2024-09-01', totalKg: 98.5, pickups: 14, tier: 'guardian' },
-  { id: 6, name: 'Amit Gajbhiye', email: 'amit.g@email.com', phone: '+91 77XXX XX456', location: 'Manewada', joinDate: '2024-10-18', totalKg: 76.2, pickups: 11, tier: 'guardian' },
-  { id: 7, name: 'Suresh Yadav', email: 'suresh.y@email.com', phone: '+91 96XXX XX876', location: 'Trimurti Nagar', joinDate: '2024-11-05', totalKg: 45.8, pickups: 8, tier: 'recycler' },
-  { id: 8, name: 'Priya Wankhede', email: 'priya.w@email.com', phone: '+91 90XXX XX891', location: 'Sitabuldi', joinDate: '2024-12-12', totalKg: 38.1, pickups: 6, tier: 'recycler' },
-  { id: 9, name: 'Kavita Pande', email: 'kavita.p@email.com', phone: '+91 73XXX XX998', location: 'Pratap Nagar', joinDate: '2025-01-08', totalKg: 22.9, pickups: 4, tier: 'recycler' },
-  { id: 10, name: 'Vikram Thakre', email: 'vikram.t@email.com', phone: '+91 93XXX XX789', location: 'Civil Lines', joinDate: '2025-02-14', totalKg: 8.4, pickups: 2, tier: 'seedling' },
-  { id: 11, name: 'Meena Wasnik', email: 'meena.w@email.com', phone: '+91 91XXX XX332', location: 'Hingna', joinDate: '2025-02-20', totalKg: 11.8, pickups: 3, tier: 'recycler' },
-  { id: 12, name: 'Rahul Meshram', email: 'rahul.m@email.com', phone: '+91 70XXX XX667', location: 'Wardhaman Nagar', joinDate: '2025-03-01', totalKg: 9.4, pickups: 2, tier: 'seedling' },
-];
-
-const donorStats = [
-  { label: 'Total Donors', value: 1287, icon: '🤝' },
-  { label: 'New This Month', value: 43, icon: '🆕' },
-  { label: 'Active Donors', value: 892, icon: '💚' },
-  { label: 'Avg. Donation', value: '19.3 kg', icon: '📊' },
-];
-
 export default function DonorsView() {
   const [search, setSearch] = useState('');
+  const [allDonors, setAllDonors] = useState([]);
+  const [donorStats, setDonorStats] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      setLoading(true);
+      try {
+        const data = await fetchDonors();
+        setAllDonors(data.donors);
+        setDonorStats(data.stats);
+      } catch (err) {
+        console.error('Error loading donors:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, []);
+
   const filtered = allDonors.filter(d =>
     d.name.toLowerCase().includes(search.toLowerCase()) ||
     d.location.toLowerCase().includes(search.toLowerCase())
   );
+
+  if (loading) {
+    return (
+      <div className="donors-view fade-in-up" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+        <div style={{ color: 'var(--text-secondary)', fontSize: '1.1rem' }}>Loading donors...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="donors-view fade-in-up">
