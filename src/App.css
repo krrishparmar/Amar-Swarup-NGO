@@ -4,8 +4,10 @@
 }
 
 .dashboard-main {
-  max-width: 1440px;
+  width: 100%;
+  max-width: 1700px;
   margin: 0 auto;
+  padding: 0 2rem 5rem; /* Large bottom padding for scroll freedom */
   animation: fadeInUp 0.4s ease forwards;
 }
 

@@ -1,0 +1,168 @@
+.driver-dashboard {
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+
+/* ── Header ── */
+.driver-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+}
+.driver-header-left { display: flex; align-items: center; gap: 0.8rem; }
+.driver-header-icon { font-size: 1.8rem; }
+.driver-header-title { font-size: 1.15rem; font-weight: 700; color: var(--text-primary); }
+.driver-header-name { font-size: 0.82rem; color: var(--text-secondary); }
+.driver-header-right { display: flex; gap: 0.6rem; align-items: center; }
+
+.driver-refresh-btn, .driver-logout-btn {
+  padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--bg-card); color: var(--text-primary); cursor: pointer;
+  font-size: 0.82rem; transition: all 0.2s;
+}
+.driver-refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+.driver-logout-btn { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); color: #f87171; }
+.driver-logout-btn:hover { background: rgba(239, 68, 68, 0.2); }
+
+/* ── Main ── */
+.driver-main { padding: 1.5rem 2rem; max-width: 1200px; margin: 0 auto; }
+
+/* ── Stats ── */
+.driver-stats-row {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem; margin-bottom: 1.5rem;
+}
+.driver-stat-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.2rem; display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
+  transition: all 0.25s; animation: fadeInUp 0.5s ease forwards; opacity: 0;
+}
+.driver-stat-card:hover { border-color: rgba(13, 148, 136, 0.3); transform: translateY(-2px); }
+.driver-stat-icon { font-size: 1.5rem; }
+.driver-stat-value { font-size: 1.5rem; font-weight: 700; color: var(--text-primary); }
+.driver-stat-label { font-size: 0.75rem; color: var(--text-secondary); text-align: center; }
+
+/* ── Filter ── */
+.driver-filter-row { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.driver-filter-pill {
+  padding: 0.4rem 0.9rem; border-radius: 20px; border: 1px solid var(--border);
+  background: transparent; color: var(--text-secondary); cursor: pointer; font-size: 0.78rem;
+  transition: all 0.2s;
+}
+.driver-filter-pill:hover { border-color: rgba(13, 148, 136, 0.3); color: var(--text-primary); }
+.driver-filter-pill.active { background: rgba(13, 148, 136, 0.12); color: #2dd4bf; border-color: rgba(13, 148, 136, 0.3); }
+
+/* ── Loading / Empty ── */
+.driver-loading {
+  display: flex; justify-content: center; align-items: center; min-height: 300px;
+  color: var(--text-secondary); font-size: 1rem;
+}
+.driver-empty {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 300px; color: var(--text-secondary);
+}
+.driver-empty-icon { font-size: 3rem; opacity: 0.5; margin-bottom: 0.8rem; }
+.driver-empty h3 { font-size: 1.1rem; color: var(--text-primary); margin-bottom: 0.4rem; }
+.driver-empty p { font-size: 0.85rem; text-align: center; max-width: 400px; }
+
+/* ── Pickup Cards ── */
+.driver-pickups-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 1rem; }
+
+.driver-pickup-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.2rem; transition: all 0.25s;
+  animation: fadeInUp 0.4s ease forwards; opacity: 0;
+}
+.driver-pickup-card:hover { border-color: rgba(13, 148, 136, 0.3); transform: translateY(-2px); }
+
+.driver-pickup-top {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;
+}
+.driver-pickup-id { font-family: 'JetBrains Mono', monospace; color: var(--text-muted); font-size: 0.82rem; }
+.driver-pickup-status {
+  padding: 0.2rem 0.7rem; border-radius: 12px; font-size: 0.75rem; font-weight: 500;
+}
+
+.driver-pickup-info { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 1rem; }
+.driver-pickup-row { display: flex; gap: 0.5rem; align-items: baseline; }
+.driver-pickup-label { font-size: 0.78rem; color: var(--text-muted); min-width: 80px; }
+.driver-pickup-value { font-size: 0.85rem; color: var(--text-primary); }
+.driver-preferred { color: #0d9488; font-weight: 500; }
+
+.driver-pickup-actions {
+  display: flex; align-items: center; gap: 0.8rem; padding-top: 0.8rem;
+  border-top: 1px solid var(--border); flex-wrap: wrap;
+}
+.driver-status-group { display: flex; align-items: center; gap: 0.4rem; flex: 1; }
+.driver-status-group label { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; }
+.driver-status-select {
+  background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border);
+  border-radius: 6px; padding: 0.4rem 0.6rem; font-size: 0.82rem; cursor: pointer; flex: 1;
+}
+.driver-status-select:focus { outline: none; border-color: #0d9488; }
+
+.driver-edit-btn {
+  background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3);
+  color: #2dd4bf; padding: 0.4rem 0.8rem; border-radius: 8px;
+  cursor: pointer; font-size: 0.8rem; transition: all 0.2s; white-space: nowrap;
+}
+.driver-edit-btn:hover { background: rgba(13, 148, 136, 0.2); }
+
+/* ── Modal ── */
+.driver-modal-overlay {
+  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center; z-index: 1000;
+}
+.driver-modal {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+  padding: 1.5rem; width: 90%; max-width: 400px;
+}
+.driver-modal-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;
+}
+.driver-modal-header h3 { font-size: 1.05rem; color: var(--text-primary); }
+.driver-modal-close {
+  background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer;
+}
+.driver-modal-close:hover { color: var(--text-primary); }
+
+.driver-modal-body { display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1.2rem; }
+.driver-field { display: flex; flex-direction: column; gap: 0.3rem; }
+.driver-field label { font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.4px; }
+.driver-field input, .driver-field select {
+  background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.6rem 0.8rem; font-size: 0.85rem;
+}
+.driver-field input:focus, .driver-field select:focus { outline: none; border-color: #0d9488; }
+
+.driver-modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; }
+.driver-btn {
+  padding: 0.6rem 1.2rem; border-radius: 8px; border: none; cursor: pointer;
+  font-size: 0.85rem; font-weight: 500; transition: all 0.2s;
+}
+.driver-btn-cancel { background: var(--bg-primary); color: var(--text-secondary); border: 1px solid var(--border); }
+.driver-btn-save { background: #0d9488; color: #fff; }
+.driver-btn-save:hover { filter: brightness(1.1); }
+.driver-btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Toast ── */
+.driver-toast {
+  position: fixed; bottom: 1.5rem; right: 1.5rem; padding: 0.8rem 1.2rem;
+  border-radius: 10px; border: 1px solid; display: flex; align-items: center;
+  gap: 0.5rem; font-size: 0.85rem; z-index: 2000; animation: slideInRight 0.3s ease;
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@media (max-width: 768px) {
+  .driver-header { flex-direction: column; gap: 0.8rem; padding: 1rem; }
+  .driver-main { padding: 1rem; }
+  .driver-pickups-list { grid-template-columns: 1fr; }
+  .driver-pickup-actions { flex-direction: column; }
+}

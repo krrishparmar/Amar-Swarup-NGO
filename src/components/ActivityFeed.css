@@ -87,16 +87,25 @@
   display: flex;
   align-items: center;
   gap: 0.45rem;
-  flex-wrap: wrap;
+  width: 100%;
 }
 
-.feed-location { font-size: 0.7rem; color: var(--text-muted); }
+.feed-location { 
+  font-size: 0.7rem; 
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 50%;
+}
 
 .feed-waste {
   font-size: 0.6rem;
   padding: 0.12rem 0.45rem;
   border-radius: 10px;
   font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .feed-weight {
@@ -104,4 +113,6 @@
   font-weight: 600;
   color: var(--accent);
   margin-left: auto;
+  white-space: nowrap;
+  flex-shrink: 0;
 }

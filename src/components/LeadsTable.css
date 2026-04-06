@@ -191,9 +191,11 @@
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(4px);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   z-index: 1000;
+  overflow-y: auto;
+  padding: 2rem 1rem;
 }
 
 /* ─── Edit Modal ─── */
@@ -204,8 +206,8 @@
   padding: 1.8rem;
   width: 520px;
   max-width: 92vw;
-  max-height: 90vh;
-  overflow-y: auto;
+  margin: auto;
+  flex-shrink: 0;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 

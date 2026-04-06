@@ -9,6 +9,7 @@ from routes.leads import leads_bp
 from routes.pickups import pickups_bp
 from routes.donors import donors_bp
 from routes.dashboard import dashboard_bp
+from routes.drivers import drivers_bp
 
 app = Flask(__name__)
 
@@ -28,6 +29,7 @@ app.register_blueprint(leads_bp)
 app.register_blueprint(pickups_bp)
 app.register_blueprint(donors_bp)
 app.register_blueprint(dashboard_bp)
+app.register_blueprint(drivers_bp)
 
 # Startup
 with app.app_context():

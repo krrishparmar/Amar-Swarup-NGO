@@ -9,6 +9,8 @@ import DonorsView from './components/DonorsView';
 import ReportsView from './components/ReportsView';
 import Footer from './components/Footer';
 import LoginView from './components/LoginView';
+import DriverLoginView from './components/DriverLoginView';
+import DriverDashboard from './components/DriverDashboard';
 import DataEntryModal from './components/DataEntryModal';
 import DataImportModal from './components/DataImportModal';
 import ChatbotWidget from './components/ChatbotWidget';
@@ -17,8 +19,11 @@ import { jwtDecode } from 'jwt-decode';
 import './App.css';
 
 function App() {
+  // Portal: 'admin' or 'driver'
+  const [portalType, setPortalType] = useState(() => localStorage.getItem('portalType') || 'admin');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
+  const [driverProfile, setDriverProfile] = useState(null);
   const [activeTab, setActiveTab] = useState('Dashboard');
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
   const [isDataEntryOpen, setIsDataEntryOpen] = useState(false);
@@ -44,6 +49,24 @@ function App() {
     localStorage.setItem('dashboardLayout', JSON.stringify(dashboardLayout));
   }, [dashboardLayout]);
 
+  useEffect(() => {
+    localStorage.setItem('portalType', portalType);
+  }, [portalType]);
+
+  // Check for stored sessions on mount
+  useEffect(() => {
+    const storedDriver = localStorage.getItem('driverProfile');
+    if (storedDriver && portalType === 'driver') {
+      setDriverProfile(JSON.parse(storedDriver));
+      setIsAuthenticated(true);
+    }
+    const storedUser = localStorage.getItem('userProfile');
+    if (storedUser && portalType === 'admin') {
+      setUserProfile(JSON.parse(storedUser));
+      setIsAuthenticated(true);
+    }
+  }, []);
+
   // Dashboard data from API
   const [kpiData, setKpiData] = useState([]);
   const [whatsappLeads, setWhatsappLeads] = useState([]);
@@ -56,6 +79,7 @@ function App() {
       const decodedUser = jwtDecode(credentialResponse.credential);
       setUserProfile(decodedUser);
       setIsAuthenticated(true);
+      setPortalType('admin');
       localStorage.setItem('userProfile', JSON.stringify(decodedUser));
     } catch (error) {
       console.error('Error decoding JWT', error);
@@ -70,17 +94,27 @@ function App() {
     };
     setUserProfile(profile);
     setIsAuthenticated(true);
+    setPortalType('admin');
     localStorage.setItem('userProfile', JSON.stringify(profile));
+  };
+
+  const handleDriverLogin = (driver) => {
+    setDriverProfile(driver);
+    setIsAuthenticated(true);
+    setPortalType('driver');
+    localStorage.setItem('driverProfile', JSON.stringify(driver));
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
     setUserProfile(null);
+    setDriverProfile(null);
     setActiveTab('Dashboard');
     localStorage.removeItem('userProfile');
+    localStorage.removeItem('driverProfile');
   };
 
-  // Fetch dashboard data when authenticated
+  // Fetch dashboard data when authenticated as admin
   const loadDashboardData = async () => {
     setLoading(true);
     try {
@@ -119,9 +153,9 @@ function App() {
   };
 
   useEffect(() => {
-    if (!isAuthenticated) return;
+    if (!isAuthenticated || portalType !== 'admin') return;
     loadDashboardData();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, portalType]);
 
   const renderContent = () => {
     if (loading && activeTab === 'Dashboard') {
@@ -188,10 +222,31 @@ function App() {
     setDashboardLayout(items);
   };
 
+  // ── Not authenticated ──
   if (!isAuthenticated) {
-    return <LoginView onLoginSuccess={handleLoginSuccess} onEmailLogin={handleEmailLogin} />;
+    if (portalType === 'driver') {
+      return (
+        <DriverLoginView
+          onDriverLogin={handleDriverLogin}
+          onSwitchToAdmin={() => setPortalType('admin')}
+        />
+      );
+    }
+    return (
+      <LoginView
+        onLoginSuccess={handleLoginSuccess}
+        onEmailLogin={handleEmailLogin}
+        onSwitchToDriver={() => setPortalType('driver')}
+      />
+    );
   }
 
+  // ── Authenticated as driver ──
+  if (portalType === 'driver' && driverProfile) {
+    return <DriverDashboard driver={driverProfile} onLogout={handleLogout} />;
+  }
+
+  // ── Authenticated as admin ──
   return (
     <div className="dashboard">
       <Header 
@@ -234,7 +289,7 @@ function App() {
         </div>
       )}
 
-      {isDataEntryOpen && <DataEntryModal onClose={() => setIsDataEntryOpen(false)} onSubmit={() => setIsDataEntryOpen(false)} />}
+      {isDataEntryOpen && <DataEntryModal onClose={() => setIsDataEntryOpen(false)} onSubmit={() => { setIsDataEntryOpen(false); refreshLeads(); }} />}
       {isDataImportOpen && <DataImportModal onClose={() => setIsDataImportOpen(false)} onSubmit={() => { setIsDataImportOpen(false); refreshLeads(); }} />}
 
       <Footer />

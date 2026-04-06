@@ -38,6 +38,16 @@ function AnimatedCounter({ end, duration = 2000, suffix = '' }) {
 export default function KPICards({ data, onTabChange }) {
   const [filter, setFilter] = useState('Monthly');
 
+  if (!data || data.length === 0) {
+    return (
+      <section className="kpi-section">
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '2rem', color: 'var(--text-secondary)', fontSize: '0.9rem', gridColumn: '1 / -1' }}>
+          No KPI data available yet.
+        </div>
+      </section>
+    );
+  }
+
   const tabMap = {
     'Total Waste Collected': 'Reports',
     "Today's Scheduled Pickups": 'Pickups',
@@ -58,12 +68,12 @@ export default function KPICards({ data, onTabChange }) {
   };
 
   return (
-    <div style={{ position: 'relative' }}>
-      <div style={{ position: 'absolute', top: '-40px', right: 0, zIndex: 10 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
         <select 
           value={filter} 
           onChange={(e) => setFilter(e.target.value)}
-          style={{ padding: '0.4rem 0.8rem', borderRadius: '6px', background: 'var(--bg-card)', color: 'var(--text-primary)', border: '1px solid var(--border)', cursor: 'pointer' }}
+          style={{ padding: '0.4rem 0.8rem', borderRadius: '6px', background: 'var(--bg-card)', color: 'var(--text-primary)', border: '1px solid rgba(255, 255, 255, 0.1)', cursor: 'pointer', outline: 'none' }}
         >
           <option value="Daily">Daily</option>
           <option value="Monthly">Monthly</option>

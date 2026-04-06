@@ -58,6 +58,28 @@ function DonorCard({ donor, index }) {
 }
 
 export default function Leaderboard({ donors }) {
+  // Empty state guard
+  if (!donors || donors.length === 0) {
+    return (
+      <section className="leaderboard-section fade-in-up" style={{ animationDelay: '0.6s' }}>
+        <div className="section-header">
+          <div>
+            <h2 className="section-title">
+              <span className="title-icon">🏆</span>
+              Donor Leaderboard
+            </h2>
+            <p className="section-subtitle">Gamified ranking by total waste donated</p>
+          </div>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '2.5rem 1rem', color: 'var(--text-secondary)' }}>
+          <span style={{ fontSize: '2.5rem', opacity: 0.4, marginBottom: '0.6rem' }}>🏆</span>
+          <h3 style={{ color: 'var(--text-primary)', fontSize: '1rem', marginBottom: '0.3rem' }}>No donors yet</h3>
+          <p style={{ fontSize: '0.85rem', textAlign: 'center' }}>Donors will appear on the leaderboard once they donate waste via WhatsApp.</p>
+        </div>
+      </section>
+    );
+  }
+
   const mvp = donors[0];
   const mvpTier = getTierInfo(mvp.tier);
 

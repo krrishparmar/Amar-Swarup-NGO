@@ -69,6 +69,12 @@ export const createPickup = (data) =>
 export const updatePickup = (id, data) =>
   request(`/pickups/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
 
+export const updatePickupFull = (id, data) =>
+  request(`/pickups/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+
+export const deletePickup = (id) =>
+  request(`/pickups/${id}`, { method: 'DELETE' });
+
 // ── Donors ────────────────────────────────
 export const fetchDonors = (search) =>
   request(`/donors${search ? `?search=${encodeURIComponent(search)}` : ''}`);
@@ -84,3 +90,28 @@ export const fetchActivity = () => request('/activity');
 
 // ── Reports ───────────────────────────────
 export const fetchReports = () => request('/reports');
+
+// ── Drivers ───────────────────────────────
+export const fetchDrivers = (status) =>
+  request(`/drivers${status ? `?status=${status}` : ''}`);
+
+export const driverSignUp = (data) =>
+  request('/drivers/signup', { method: 'POST', body: JSON.stringify(data) });
+
+export const driverSignIn = (email, password) =>
+  request('/drivers/signin', {
+    method: 'POST',
+    body: JSON.stringify({ email, password }),
+  });
+
+export const driverGoogleSignIn = (credential) =>
+  request('/drivers/google', {
+    method: 'POST',
+    body: JSON.stringify({ credential }),
+  });
+
+export const fetchDriverPickups = (driverId, status) =>
+  request(`/drivers/${driverId}/pickups${status && status !== 'All' ? `?status=${status}` : ''}`);
+
+export const driverUpdatePickup = (pickupId, data) =>
+  request(`/drivers/pickups/${pickupId}`, { method: 'PATCH', body: JSON.stringify(data) });

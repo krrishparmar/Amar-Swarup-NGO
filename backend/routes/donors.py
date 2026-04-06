@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from datetime import datetime
 from models import db, Donor
 
 donors_bp = Blueprint('donors_bp', __name__)
@@ -16,14 +17,22 @@ def get_donors():
             if search in d.name.lower() or search in d.location.lower()
         ]
 
-    # Compute stats
+    # Compute stats from real data
     all_donors = Donor.query.all()
     total_kg = sum(d.total_kg for d in all_donors)
     avg_donation = round(total_kg / len(all_donors), 1) if all_donors else 0
 
+    # Count donors created this month
+    now = datetime.utcnow()
+    current_month_prefix = now.strftime('%Y-%m')
+    new_this_month = sum(
+        1 for d in all_donors
+        if d.join_date and d.join_date.startswith(current_month_prefix)
+    )
+
     stats = [
         {'label': 'Total Donors', 'value': len(all_donors), 'icon': '🤝'},
-        {'label': 'New This Month', 'value': 43, 'icon': '🆕'},
+        {'label': 'New This Month', 'value': new_this_month, 'icon': '🆕'},
         {'label': 'Active Donors', 'value': len([d for d in all_donors if d.total_kg > 0]), 'icon': '💚'},
         {'label': 'Avg. Donation', 'value': f'{avg_donation} kg', 'icon': '📊'},
     ]

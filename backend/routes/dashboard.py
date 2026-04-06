@@ -33,15 +33,86 @@ def get_activity():
     activities = Activity.query.order_by(Activity.id.asc()).all()
     return jsonify([a.to_dict() for a in activities])
 
+import datetime
+from collections import defaultdict
+
 @dashboard_bp.route('/api/reports', methods=['GET'])
 def get_reports():
-    """Return all report data: monthly trends, waste breakdown, top areas."""
-    monthly = MonthlyReport.query.order_by(MonthlyReport.id.asc()).all()
-    waste = WasteBreakdown.query.order_by(WasteBreakdown.id.asc()).all()
-    areas = TopArea.query.order_by(TopArea.pickups.desc()).all()
+    """Return report data dynamically computed from live Pickups."""
+    pickups = Pickup.query.all()
+
+    # 1. Monthly Data
+    month_map = defaultdict(lambda: {'waste': 0.0, 'pickups': 0, 'donors': set(), 'sort_key': ''})
+    
+    for p in pickups:
+        dt = p.created_at or datetime.datetime.utcnow()
+        m_label = dt.strftime('%b %Y')
+        sort_key = dt.strftime('%Y-%m')
+        
+        month_map[m_label]['sort_key'] = sort_key
+        month_map[m_label]['pickups'] += 1
+        if p.donor: month_map[m_label]['donors'].add(p.donor)
+        
+        try: month_map[m_label]['waste'] += float(str(p.weight).replace('kg', '').strip())
+        except: pass
+
+    # Sort chronologically
+    sorted_months = sorted(month_map.items(), key=lambda x: x[1]['sort_key'])
+    monthly_data = []
+    for m_label, stats in sorted_months:
+        monthly_data.append({
+            'month': m_label,
+            'waste': round(stats['waste'], 1),
+            'pickups': stats['pickups'],
+            'donors': len(stats['donors'])
+        })
+
+    # 2. Waste Breakdown
+    waste_totals = defaultdict(float)
+    total_waste = 0.0
+    for p in pickups:
+        try: w = float(str(p.weight).replace('kg', '').strip())
+        except: w = 0.0
+        if p.waste_type:
+            waste_totals[p.waste_type] += w
+            total_waste += w
+
+    waste_colors = {
+        'Electronics': '#0d9488',
+        'Plastic': '#3b82f6',
+        'Clothes': '#a855f7',
+        'Paper': '#fbbf24',
+        'Glass': '#ec4899'
+    }
+
+    waste_breakdown = []
+    for wtype, w in sorted(waste_totals.items(), key=lambda x: x[1], reverse=True):
+        percent = (w / total_waste * 100) if total_waste > 0 else 0
+        waste_breakdown.append({
+            'type': wtype,
+            'kg': round(w, 1),
+            'percent': round(percent, 1),
+            'color': waste_colors.get(wtype, '#94a3b8')
+        })
+
+    # 3. Top Areas
+    area_stats = defaultdict(lambda: {'pickups': 0, 'kg': 0.0})
+    for p in pickups:
+        loc = p.location or 'Unknown'
+        area_stats[loc]['pickups'] += 1
+        try: area_stats[loc]['kg'] += float(str(p.weight).replace('kg', '').strip())
+        except: pass
+
+    top_areas = []
+    for area, stats in sorted(area_stats.items(), key=lambda x: x[1]['pickups'], reverse=True)[:5]:
+        top_areas.append({
+            'area': area,
+            'pickups': stats['pickups'],
+            'kg': round(stats['kg'], 1)
+        })
 
     return jsonify({
-        'monthlyData': [m.to_dict() for m in monthly],
-        'wasteBreakdown': [w.to_dict() for w in waste],
-        'topAreas': [a.to_dict() for a in areas],
+        'monthlyData': monthly_data,
+        'wasteBreakdown': waste_breakdown,
+        'topAreas': top_areas,
     })

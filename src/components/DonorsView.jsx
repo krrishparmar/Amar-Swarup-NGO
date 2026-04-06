@@ -86,27 +86,41 @@ export default function DonorsView() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((d, i) => {
-                const tier = getTierInfo(d.tier);
-                return (
-                  <tr key={d.id} className="donor-row" style={{ animationDelay: `${i * 0.04}s` }}>
-                    <td className="td-name">{d.name}</td>
-                    <td className="td-email">{d.email}</td>
-                    <td className="td-phone">{d.phone}</td>
-                    <td><span className="location-tag">📍 {d.location}</span></td>
-                    <td className="td-date">{d.joinDate}</td>
-                    <td className="td-weight">{d.totalKg} kg</td>
-                    <td className="td-pickups">{d.pickups}</td>
-                    <td>
-                      <span className="tier-pill" style={{
-                        color: tier.color,
-                        background: `${tier.color}18`,
-                        border: `1px solid ${tier.color}40`,
-                      }}>{tier.label}</span>
-                    </td>
-                  </tr>
-                );
-              })}
+              {filtered.length === 0 ? (
+                <tr>
+                  <td colSpan="8" style={{ textAlign: 'center', padding: '2.5rem 1rem' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: 'var(--text-secondary)' }}>
+                      <span style={{ fontSize: '2rem', opacity: 0.4, marginBottom: '0.5rem' }}>🤝</span>
+                      <h4 style={{ color: 'var(--text-primary)', fontSize: '0.95rem', marginBottom: '0.3rem' }}>No donors found</h4>
+                      <p style={{ fontSize: '0.82rem' }}>
+                        {search ? `No donors matching "${search}".` : 'Donors will appear here once they register via WhatsApp.'}
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                filtered.map((d, i) => {
+                  const tier = getTierInfo(d.tier);
+                  return (
+                    <tr key={d.id} className="donor-row" style={{ animationDelay: `${i * 0.04}s` }}>
+                      <td className="td-name">{d.name}</td>
+                      <td className="td-email">{d.email}</td>
+                      <td className="td-phone">{d.phone}</td>
+                      <td><span className="location-tag">📍 {d.location}</span></td>
+                      <td className="td-date">{d.joinDate}</td>
+                      <td className="td-weight">{d.totalKg} kg</td>
+                      <td className="td-pickups">{d.pickups}</td>
+                      <td>
+                        <span className="tier-pill" style={{
+                          color: tier.color,
+                          background: `${tier.color}18`,
+                          border: `1px solid ${tier.color}40`,
+                        }}>{tier.label}</span>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>

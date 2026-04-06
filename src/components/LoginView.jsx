@@ -3,7 +3,7 @@ import { GoogleLogin } from '@react-oauth/google';
 import { signIn, signUp } from '../api';
 import './LoginView.css';
 
-export default function LoginView({ onLoginSuccess, onEmailLogin }) {
+export default function LoginView({ onLoginSuccess, onEmailLogin, onSwitchToDriver }) {
   const [mode, setMode] = useState('signin'); // 'signin' | 'signup'
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -181,6 +181,19 @@ export default function LoginView({ onLoginSuccess, onEmailLogin }) {
         </div>
 
         <div className="login-footer">
+          {onSwitchToDriver && (
+            <p style={{ marginBottom: '0.6rem' }}>
+              <button
+                onClick={onSwitchToDriver}
+                style={{
+                  background: 'none', border: 'none', color: '#0d9488',
+                  cursor: 'pointer', fontSize: '0.82rem', textDecoration: 'underline',
+                }}
+              >
+                🚛 Are you a driver? Log in here →
+              </button>
+            </p>
+          )}
           <p>Secure access restricted to Amar Swarup Administration.</p>
         </div>
       </div>

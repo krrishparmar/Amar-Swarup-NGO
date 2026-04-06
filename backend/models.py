@@ -35,6 +35,41 @@ class User(db.Model):
         }
 
 
+class Driver(db.Model):
+    __tablename__ = 'drivers_auth'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    phone = db.Column(db.String(30), nullable=False)
+    password_hash = db.Column(db.String(256), nullable=False)
+    vehicle_number = db.Column(db.String(30), nullable=False, default='')
+    status = db.Column(db.String(20), nullable=False, default='Active')
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def set_password(self, password):
+        salt = secrets.token_hex(16)
+        h = hashlib.sha256((salt + password).encode()).hexdigest()
+        self.password_hash = f'{salt}${h}'
+
+    def check_password(self, password):
+        if '$' not in self.password_hash:
+            return False
+        salt, stored_hash = self.password_hash.split('$', 1)
+        h = hashlib.sha256((salt + password).encode()).hexdigest()
+        return h == stored_hash
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'email': self.email,
+            'phone': self.phone,
+            'vehicleNumber': self.vehicle_number,
+            'status': self.status,
+        }
+
+
 class Lead(db.Model):
     __tablename__ = 'leads'
 
@@ -46,6 +81,7 @@ class Lead(db.Model):
     date = db.Column(db.String(20), nullable=False)
     time = db.Column(db.String(20), nullable=False)
     weight = db.Column(db.Float, nullable=False)
+    preferred_time = db.Column(db.String(40), nullable=False, default='')
     status = db.Column(db.String(20), nullable=False, default='Pending')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -59,6 +95,7 @@ class Lead(db.Model):
             'date': self.date,
             'time': self.time,
             'weight': self.weight,
+            'preferredTime': self.preferred_time,
             'status': self.status,
         }
 
@@ -74,9 +111,13 @@ class Pickup(db.Model):
     date = db.Column(db.String(20), nullable=False)
     time = db.Column(db.String(20), nullable=False)
     weight = db.Column(db.Float, nullable=False)
+    preferred_time = db.Column(db.String(40), nullable=False, default='')
     status = db.Column(db.String(20), nullable=False, default='Pending')
     driver = db.Column(db.String(60), nullable=False, default='Unassigned')
+    driver_id = db.Column(db.Integer, db.ForeignKey('drivers_auth.id'), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    driver_ref = db.relationship('Driver', backref='pickups', foreign_keys=[driver_id])
 
     def to_dict(self):
         return {
@@ -88,8 +129,10 @@ class Pickup(db.Model):
             'date': self.date,
             'time': self.time,
             'weight': self.weight,
+            'preferredTime': self.preferred_time,
             'status': self.status,
             'driver': self.driver,
+            'driverId': self.driver_id,
         }
 
 
@@ -124,7 +167,7 @@ class Donor(db.Model):
         return {
             'rank': rank,
             'name': self.name,
-            'city': 'Nagpur',
+            'city': self.location or 'Nagpur',
             'totalKg': self.total_kg,
             'points': int(self.total_kg * 10),
             'tier': self.tier,
