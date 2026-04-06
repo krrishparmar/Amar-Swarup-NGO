@@ -1,7 +1,38 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import hashlib
+import secrets
 
 db = SQLAlchemy()
+
+
+class User(db.Model):
+    __tablename__ = 'users'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(256), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def set_password(self, password):
+        salt = secrets.token_hex(16)
+        h = hashlib.sha256((salt + password).encode()).hexdigest()
+        self.password_hash = f'{salt}${h}'
+
+    def check_password(self, password):
+        if '$' not in self.password_hash:
+            return False
+        salt, stored_hash = self.password_hash.split('$', 1)
+        h = hashlib.sha256((salt + password).encode()).hexdigest()
+        return h == stored_hash
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'email': self.email,
+        }
 
 
 class Lead(db.Model):

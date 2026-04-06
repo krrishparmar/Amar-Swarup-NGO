@@ -36,32 +36,58 @@ function AnimatedCounter({ end, duration = 2000, suffix = '' }) {
 }
 
 export default function KPICards({ data, onTabChange }) {
+  const [filter, setFilter] = useState('Monthly');
+
   const tabMap = {
     'Total Waste Collected': 'Reports',
     "Today's Scheduled Pickups": 'Pickups',
     'Active WhatsApp Leads': 'Dashboard',
     'Total Donors Registered': 'Donors',
-    'Pickups Completed This Month': 'Pickups',
+    'Pickups Completed': 'Pickups',
+  };
+
+  const getFilteredValue = (val) => {
+    if (filter === 'Daily') return Math.floor(val / 30) || 1;
+    if (filter === 'Yearly') return val * 12;
+    return val;
+  };
+
+  const getFilteredLabel = (label) => {
+    if (label.includes('This Month')) return label.replace('This Month', `This ${filter.replace('ly', '')}`);
+    return label;
   };
 
   return (
-    <section className="kpi-section">
-      {data.map((kpi, index) => (
-        <div
-          key={kpi.label}
-          className="kpi-card fade-in-up"
-          style={{ animationDelay: `${index * 0.08}s` }}
-          onClick={() => onTabChange && onTabChange(tabMap[kpi.label] || 'Dashboard')}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => e.key === 'Enter' && onTabChange && onTabChange(tabMap[kpi.label] || 'Dashboard')}
+    <div style={{ position: 'relative' }}>
+      <div style={{ position: 'absolute', top: '-40px', right: 0, zIndex: 10 }}>
+        <select 
+          value={filter} 
+          onChange={(e) => setFilter(e.target.value)}
+          style={{ padding: '0.4rem 0.8rem', borderRadius: '6px', background: 'var(--bg-card)', color: 'var(--text-primary)', border: '1px solid var(--border)', cursor: 'pointer' }}
         >
-          <div className="kpi-icon">{kpi.icon}</div>
-          <AnimatedCounter end={kpi.value} suffix={kpi.suffix} />
-          <span className="kpi-label">{kpi.label}</span>
-          <div className="kpi-shine"></div>
-        </div>
-      ))}
-    </section>
+          <option value="Daily">Daily</option>
+          <option value="Monthly">Monthly</option>
+          <option value="Yearly">Yearly</option>
+        </select>
+      </div>
+      <section className="kpi-section">
+        {data.map((kpi, index) => (
+          <div
+            key={kpi.label}
+            className="kpi-card fade-in-up"
+            style={{ animationDelay: `${index * 0.08}s` }}
+            onClick={() => onTabChange && onTabChange(tabMap[kpi.label] || 'Dashboard')}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === 'Enter' && onTabChange && onTabChange(tabMap[kpi.label] || 'Dashboard')}
+          >
+            <div className="kpi-icon">{kpi.icon}</div>
+            <AnimatedCounter end={getFilteredValue(kpi.value)} suffix={kpi.suffix} key={filter + kpi.value} />
+            <span className="kpi-label">{getFilteredLabel(kpi.label)}</span>
+            <div className="kpi-shine"></div>
+          </div>
+        ))}
+      </section>
+    </div>
   );
 }

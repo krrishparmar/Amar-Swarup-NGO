@@ -1,4 +1,4 @@
-import { getTierInfo, getTierProgress } from '../data/mockData';
+import { getTierInfo, getTierProgress } from '../data/utils';
 import './Leaderboard.css';
 
 const medalEmojis = ['🥇', '🥈', '🥉'];

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { fetchDonors } from '../api';
-import { getTierInfo } from '../data/mockData';
+import { getTierInfo } from '../data/utils';
 import './DonorsView.css';
 
 export default function DonorsView() {

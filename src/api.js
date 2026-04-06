@@ -22,6 +22,18 @@ export const verifyGoogleToken = (credential) =>
     body: JSON.stringify({ credential }),
   });
 
+export const signUp = (name, email, password) =>
+  request('/auth/signup', {
+    method: 'POST',
+    body: JSON.stringify({ name, email, password }),
+  });
+
+export const signIn = (email, password) =>
+  request('/auth/signin', {
+    method: 'POST',
+    body: JSON.stringify({ email, password }),
+  });
+
 // ── KPI ───────────────────────────────────
 export const fetchKPI = () => request('/kpi');
 
@@ -34,6 +46,18 @@ export const createLead = (data) =>
 
 export const updateLead = (id, data) =>
   request(`/leads/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
+
+export const updateLeadFull = (id, data) =>
+  request(`/leads/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+
+export const updateLeadStatus = (id, status) =>
+  request(`/leads/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) });
+
+export const deleteLead = (id) =>
+  request(`/leads/${id}`, { method: 'DELETE' });
+
+export const bulkImportLeads = (records) =>
+  request('/leads/bulk-import', { method: 'POST', body: JSON.stringify({ records }) });
 
 // ── Pickups ───────────────────────────────
 export const fetchPickups = (status) =>

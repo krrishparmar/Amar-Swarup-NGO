@@ -98,7 +98,11 @@ export default function PickupsView() {
                   <td><span className="location-tag">📍 {p.location}</span></td>
                   <td><span className="waste-badge">{p.wasteType}</span></td>
                   <td className="td-date">{p.date} · {p.time}</td>
-                  <td className="td-weight">{p.weight} kg</td>
+                  <td className="td-weight">
+                    {typeof p.weight === 'number' 
+                      ? (p.weight < 5 ? '<5 kg' : p.weight <= 10 ? '5-10 kg' : p.weight <= 20 ? '10-20 kg' : '>20 kg') 
+                      : String(p.weight).includes('kg') ? p.weight : `${p.weight} kg`}
+                  </td>
                   <td className={`td-driver ${p.driver === 'Unassigned' ? 'unassigned' : ''}`}>{p.driver}</td>
                   <td>
                     <span className="status-pill" style={{

@@ -1,7 +1,16 @@
 import { useState } from 'react';
 import './Header.css';
 
-export default function Header({ activeTab, onTabChange, userProfile, onLogout }) {
+export default function Header({ 
+  activeTab, 
+  onTabChange, 
+  userProfile, 
+  onLogout,
+  theme,
+  toggleTheme,
+  onAddDataClick,
+  onImportDataClick
+}) {
   const [isLogoutMenuOpen, setIsLogoutMenuOpen] = useState(false);
 
   return (
@@ -29,6 +38,13 @@ export default function Header({ activeTab, onTabChange, userProfile, onLogout }
       </nav>
 
       <div className="header-right">
+        <button className="action-btn" onClick={onAddDataClick}>+ Add Data</button>
+        <button className="action-btn import-btn" onClick={onImportDataClick}>📥 Import</button>
+        
+        <button className="theme-toggle" onClick={toggleTheme} title="Toggle Theme">
+          {theme === 'light' ? '🌙' : '☀️'}
+        </button>
+
         <div className="live-indicator">
           <div className="live-dot"></div>
           <span>System Live</span>
