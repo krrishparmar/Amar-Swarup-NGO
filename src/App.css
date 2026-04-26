@@ -1,6 +1,7 @@
 .dashboard {
   min-height: 100vh;
   background: var(--bg-primary);
+  position: relative;
 }
 
 .dashboard-main {
@@ -8,7 +9,7 @@
   max-width: 1700px;
   margin: 0 auto;
   padding: 0 2rem 5rem; /* Large bottom padding for scroll freedom */
-  animation: fadeInUp 0.4s ease forwards;
+  animation: fadeInUp 0.4s var(--ease-out-expo) forwards;
 }
 
 .bottom-section {
@@ -25,6 +26,36 @@
 
 .bottom-section .activity-feed {
   margin: 2rem 0;
+}
+
+/* ═══════════════════════════════════════════
+   Customize Modal Enhancements
+   ═══════════════════════════════════════════ */
+
+.customize-btn {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  transition: all var(--duration-normal) var(--ease-spring);
+  position: relative;
+  overflow: hidden;
+}
+
+.customize-btn:hover {
+  border-color: var(--accent-border);
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.customize-btn:active {
+  transform: translateY(0) scale(0.98);
 }
 
 @media (max-width: 1024px) {

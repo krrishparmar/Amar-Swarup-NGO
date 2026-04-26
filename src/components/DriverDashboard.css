@@ -9,8 +9,13 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background: var(--bg-card);
+  background: rgba(22, 24, 32, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 .driver-header-left { display: flex; align-items: center; gap: 0.8rem; }
 .driver-header-icon { font-size: 1.8rem; }
@@ -21,11 +26,12 @@
 .driver-refresh-btn, .driver-logout-btn {
   padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--border);
   background: var(--bg-card); color: var(--text-primary); cursor: pointer;
-  font-size: 0.82rem; transition: all 0.2s;
+  font-size: 0.82rem; transition: all 0.25s var(--ease-spring);
 }
-.driver-refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+.driver-refresh-btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+.driver-refresh-btn:active { transform: translateY(0) scale(0.98); }
 .driver-logout-btn { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); color: #f87171; }
-.driver-logout-btn:hover { background: rgba(239, 68, 68, 0.2); }
+.driver-logout-btn:hover { background: rgba(239, 68, 68, 0.2); transform: translateY(-1px); }
 
 /* ── Main ── */
 .driver-main { padding: 1.5rem 2rem; max-width: 1200px; margin: 0 auto; }
@@ -38,11 +44,14 @@
 .driver-stat-card {
   background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
   padding: 1.2rem; display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
-  transition: all 0.25s; animation: fadeInUp 0.5s ease forwards; opacity: 0;
+  transition: all 0.3s var(--ease-spring); animation: fadeInUp 0.5s ease forwards; opacity: 0;
+  box-shadow: var(--shadow-sm);
 }
-.driver-stat-card:hover { border-color: rgba(13, 148, 136, 0.3); transform: translateY(-2px); }
-.driver-stat-icon { font-size: 1.5rem; }
-.driver-stat-value { font-size: 1.5rem; font-weight: 700; color: var(--text-primary); }
+.driver-stat-card:hover { border-color: rgba(13, 148, 136, 0.3); transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.driver-stat-icon { font-size: 1.5rem; transition: transform 0.3s var(--ease-out-back); }
+.driver-stat-card:hover .driver-stat-icon { transform: scale(1.15); }
+.driver-stat-value { font-size: 1.5rem; font-weight: 700; color: var(--text-primary); transition: color 0.3s ease; }
+.driver-stat-card:hover .driver-stat-value { color: #2dd4bf; }
 .driver-stat-label { font-size: 0.75rem; color: var(--text-secondary); text-align: center; }
 
 /* ── Filter ── */
@@ -73,10 +82,11 @@
 
 .driver-pickup-card {
   background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 1.2rem; transition: all 0.25s;
+  padding: 1.2rem; transition: all 0.3s var(--ease-spring);
   animation: fadeInUp 0.4s ease forwards; opacity: 0;
+  box-shadow: var(--shadow-sm);
 }
-.driver-pickup-card:hover { border-color: rgba(13, 148, 136, 0.3); transform: translateY(-2px); }
+.driver-pickup-card:hover { border-color: rgba(13, 148, 136, 0.3); transform: translateY(-3px); box-shadow: var(--shadow-md); }
 
 .driver-pickup-top {
   display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;
@@ -113,12 +123,21 @@
 
 /* ── Modal ── */
 .driver-modal-overlay {
-  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
+  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex; align-items: center; justify-content: center; z-index: 1000;
+  animation: overlayFadeIn 0.25s ease forwards;
 }
+@keyframes overlayFadeIn { from { opacity: 0; } to { opacity: 1; } }
 .driver-modal {
   background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
   padding: 1.5rem; width: 90%; max-width: 400px;
+  box-shadow: var(--shadow-xl);
+  animation: modalSlideIn 0.35s var(--ease-out-expo) forwards;
+}
+@keyframes modalSlideIn {
+  from { opacity: 0; transform: translateY(-20px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 .driver-modal-header {
   display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;

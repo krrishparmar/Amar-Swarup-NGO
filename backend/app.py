@@ -14,12 +14,17 @@ from routes.drivers import drivers_bp
 app = Flask(__name__)
 
 # Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///amar_swarup.db'
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+    'DATABASE_URL',
+    'sqlite:///' + os.path.join(basedir, 'instance', 'amar_swarup.db')
+)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
 
-# Initialize extensions
-CORS(app)
+# CORS — allow frontend origin in production, everything in dev
+frontend_url = os.environ.get('FRONTEND_URL', '*')
+CORS(app, origins=[frontend_url] if frontend_url != '*' else ['*'])
 db.init_app(app)
 
 # Register Blueprints
@@ -37,3 +42,4 @@ with app.app_context():
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5001)
+

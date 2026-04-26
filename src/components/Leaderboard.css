@@ -1,11 +1,22 @@
+/* ═══════════════════════════════════════════
+   Leaderboard — Animated MVP + Depth Cards
+   ═══════════════════════════════════════════ */
+
 .leaderboard-section {
   margin: 2rem;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 16px;
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--duration-slow) ease;
 }
 
+.leaderboard-section:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* ─── MVP Card with Animated Gradient Border ─── */
 .mvp-card {
   margin: 0 1.5rem;
   background: var(--accent-soft);
@@ -13,6 +24,40 @@
   border-radius: var(--radius);
   padding: 1.15rem 1.35rem;
   position: relative;
+  overflow: hidden;
+  transition: all var(--duration-normal) var(--ease-spring);
+}
+
+/* Animated gradient border glow */
+.mvp-card::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: calc(var(--radius) + 2px);
+  background: conic-gradient(
+    from 0deg,
+    var(--accent),
+    #a78bfa,
+    #06b6d4,
+    var(--accent)
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding: 1px;
+  animation: gradient-rotate 6s linear infinite;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.mvp-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+.mvp-card:hover::before {
+  opacity: 0.7;
 }
 
 .mvp-badge {
@@ -30,7 +75,10 @@
   gap: 0.85rem;
 }
 
-.mvp-medal { font-size: 2rem; }
+.mvp-medal {
+  font-size: 2rem;
+  animation: float 3s ease-in-out infinite;
+}
 
 .mvp-name {
   font-family: 'Syne', sans-serif;
@@ -47,6 +95,7 @@
   margin-top: 0.15rem;
 }
 
+/* ─── Donor Cards ─── */
 .leaderboard-list {
   padding: 1rem 1.5rem 1.5rem;
   display: flex;
@@ -62,12 +111,14 @@
   border-radius: 10px;
   background: transparent;
   border: 1px solid transparent;
-  transition: all 0.2s;
+  transition: all 0.3s var(--ease-spring);
 }
 
 .donor-card:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.025);
   border-color: var(--border);
+  transform: translateX(4px) translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 .donor-card.top-1 {
@@ -81,13 +132,26 @@
 }
 
 .donor-rank { min-width: 36px; display: flex; justify-content: center; }
-.medal { font-size: 1.4rem; }
+
+.medal {
+  font-size: 1.4rem;
+  transition: transform 0.3s var(--ease-out-back);
+}
+
+.donor-card:hover .medal {
+  transform: scale(1.2) rotate(-10deg);
+}
 
 .rank-number {
   font-family: 'Syne', sans-serif;
   font-size: 0.85rem;
   font-weight: 700;
   color: var(--text-muted);
+  transition: color 0.3s ease;
+}
+
+.donor-card:hover .rank-number {
+  color: var(--accent);
 }
 
 .donor-info { flex: 1; min-width: 0; }
@@ -108,6 +172,11 @@
   border-radius: 20px;
   font-weight: 600;
   white-space: nowrap;
+  transition: transform 0.2s var(--ease-spring);
+}
+
+.donor-card:hover .tier-badge {
+  transform: scale(1.05);
 }
 
 .donor-stats { display: flex; gap: 0.85rem; margin-top: 0.3rem; }
@@ -128,6 +197,22 @@
   height: 100%;
   border-radius: 3px;
   transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+/* Animated shimmer on progress bar */
+.progress-bar-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2.5s linear infinite;
 }
 
 .progress-label {

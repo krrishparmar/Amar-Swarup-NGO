@@ -1,0 +1,123 @@
+/* ═══════════════════════════════════════════
+   Ambient Animated Background
+   Soft gradient orbs drifting behind content
+   ═══════════════════════════════════════════ */
+
+.ambient-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Gradient Orbs */
+.ambient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.12;
+  will-change: transform;
+}
+
+.ambient-orb--1 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, #6C8EEF 0%, #4F46E5 50%, transparent 70%);
+  top: -10%;
+  left: -5%;
+  animation: orb-drift-1 25s ease-in-out infinite;
+}
+
+.ambient-orb--2 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #0d9488 0%, #06b6d4 50%, transparent 70%);
+  top: 40%;
+  right: -8%;
+  animation: orb-drift-2 30s ease-in-out infinite;
+  animation-delay: -10s;
+}
+
+.ambient-orb--3 {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, #a78bfa 0%, #7c3aed 50%, transparent 70%);
+  bottom: -5%;
+  left: 30%;
+  animation: orb-drift-3 28s ease-in-out infinite;
+  animation-delay: -5s;
+}
+
+/* Noise grain overlay */
+.ambient-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  pointer-events: none;
+}
+
+/* ─── Orb Drift Keyframes ─── */
+@keyframes orb-drift-1 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(80px, 60px) scale(1.1);
+  }
+  50% {
+    transform: translate(40px, 120px) scale(0.95);
+  }
+  75% {
+    transform: translate(-40px, 50px) scale(1.05);
+  }
+}
+
+@keyframes orb-drift-2 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(-70px, -50px) scale(1.08);
+  }
+  50% {
+    transform: translate(-30px, 80px) scale(0.92);
+  }
+  75% {
+    transform: translate(50px, 30px) scale(1.04);
+  }
+}
+
+@keyframes orb-drift-3 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(60px, -40px) scale(1.06);
+  }
+  50% {
+    transform: translate(-50px, -70px) scale(0.94);
+  }
+  75% {
+    transform: translate(-20px, 40px) scale(1.08);
+  }
+}
+
+/* ─── Light Theme Adjustments ─── */
+[data-theme="light"] .ambient-orb {
+  opacity: 0.06;
+}
+
+[data-theme="light"] .ambient-noise {
+  opacity: 0.015;
+}
+
+/* ─── Reduced Motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  .ambient-orb {
+    animation: none !important;
+  }
+}

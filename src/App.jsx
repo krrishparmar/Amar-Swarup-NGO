@@ -1,67 +1,72 @@
-import { useState, useEffect } from 'react';
-import Header from './components/Header';
-import KPICards from './components/KPICards';
-import LeadsTable from './components/LeadsTable';
-import Leaderboard from './components/Leaderboard';
-import ActivityFeed from './components/ActivityFeed';
-import PickupsView from './components/PickupsView';
-import DonorsView from './components/DonorsView';
-import ReportsView from './components/ReportsView';
-import Footer from './components/Footer';
-import LoginView from './components/LoginView';
-import DriverLoginView from './components/DriverLoginView';
-import DriverDashboard from './components/DriverDashboard';
-import DataEntryModal from './components/DataEntryModal';
-import DataImportModal from './components/DataImportModal';
-import ChatbotWidget from './components/ChatbotWidget';
-import { fetchKPI, fetchLeads, fetchLeaderboard, fetchActivity } from './api';
-import { jwtDecode } from 'jwt-decode';
-import './App.css';
+import { useState, useEffect } from "react";
+import Header from "./components/Header";
+import KPICards from "./components/KPICards";
+import LeadsTable from "./components/LeadsTable";
+import Leaderboard from "./components/Leaderboard";
+import ActivityFeed from "./components/ActivityFeed";
+import PickupsView from "./components/PickupsView";
+import DonorsView from "./components/DonorsView";
+import ReportsView from "./components/ReportsView";
+import Footer from "./components/Footer";
+import LoginView from "./components/LoginView";
+import DriverLoginView from "./components/DriverLoginView";
+import DriverDashboard from "./components/DriverDashboard";
+import DataEntryModal from "./components/DataEntryModal";
+import DataImportModal from "./components/DataImportModal";
+import ChatbotWidget from "./components/ChatbotWidget";
+import AmbientBackground from "./components/AmbientBackground";
+import { fetchKPI, fetchLeads, fetchLeaderboard, fetchActivity } from "./api";
+import { jwtDecode } from "jwt-decode";
+import "./App.css";
 
 function App() {
   // Portal: 'admin' or 'driver'
-  const [portalType, setPortalType] = useState(() => localStorage.getItem('portalType') || 'admin');
+  const [portalType, setPortalType] = useState(
+    () => localStorage.getItem("portalType") || "admin",
+  );
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
   const [driverProfile, setDriverProfile] = useState(null);
-  const [activeTab, setActiveTab] = useState('Dashboard');
-  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
+  const [activeTab, setActiveTab] = useState("Dashboard");
+  const [theme, setTheme] = useState(
+    () => localStorage.getItem("theme") || "dark",
+  );
   const [isDataEntryOpen, setIsDataEntryOpen] = useState(false);
   const [isDataImportOpen, setIsDataImportOpen] = useState(false);
-  
+
   const defaultLayout = [
-    { id: 'kpi', title: 'KPI Summary', visible: true },
-    { id: 'leads', title: 'Recent Leads', visible: true },
-    { id: 'bottom', title: 'Leaderboard & Activity', visible: true }
+    { id: "kpi", title: "KPI Summary", visible: true },
+    { id: "leads", title: "Recent Leads", visible: true },
+    { id: "bottom", title: "Leaderboard & Activity", visible: true },
   ];
   const [dashboardLayout, setDashboardLayout] = useState(() => {
-    const saved = localStorage.getItem('dashboardLayout');
+    const saved = localStorage.getItem("dashboardLayout");
     return saved ? JSON.parse(saved) : defaultLayout;
   });
   const [isCustomizeOpen, setIsCustomizeOpen] = useState(false);
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
   }, [theme]);
 
   useEffect(() => {
-    localStorage.setItem('dashboardLayout', JSON.stringify(dashboardLayout));
+    localStorage.setItem("dashboardLayout", JSON.stringify(dashboardLayout));
   }, [dashboardLayout]);
 
   useEffect(() => {
-    localStorage.setItem('portalType', portalType);
+    localStorage.setItem("portalType", portalType);
   }, [portalType]);
 
   // Check for stored sessions on mount
   useEffect(() => {
-    const storedDriver = localStorage.getItem('driverProfile');
-    if (storedDriver && portalType === 'driver') {
+    const storedDriver = localStorage.getItem("driverProfile");
+    if (storedDriver && portalType === "driver") {
       setDriverProfile(JSON.parse(storedDriver));
       setIsAuthenticated(true);
     }
-    const storedUser = localStorage.getItem('userProfile');
-    if (storedUser && portalType === 'admin') {
+    const storedUser = localStorage.getItem("userProfile");
+    if (storedUser && portalType === "admin") {
       setUserProfile(JSON.parse(storedUser));
       setIsAuthenticated(true);
     }
@@ -79,10 +84,10 @@ function App() {
       const decodedUser = jwtDecode(credentialResponse.credential);
       setUserProfile(decodedUser);
       setIsAuthenticated(true);
-      setPortalType('admin');
-      localStorage.setItem('userProfile', JSON.stringify(decodedUser));
+      setPortalType("admin");
+      localStorage.setItem("userProfile", JSON.stringify(decodedUser));
     } catch (error) {
-      console.error('Error decoding JWT', error);
+      console.error("Error decoding JWT", error);
     }
   };
 
@@ -94,24 +99,24 @@ function App() {
     };
     setUserProfile(profile);
     setIsAuthenticated(true);
-    setPortalType('admin');
-    localStorage.setItem('userProfile', JSON.stringify(profile));
+    setPortalType("admin");
+    localStorage.setItem("userProfile", JSON.stringify(profile));
   };
 
   const handleDriverLogin = (driver) => {
     setDriverProfile(driver);
     setIsAuthenticated(true);
-    setPortalType('driver');
-    localStorage.setItem('driverProfile', JSON.stringify(driver));
+    setPortalType("driver");
+    localStorage.setItem("driverProfile", JSON.stringify(driver));
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
     setUserProfile(null);
     setDriverProfile(null);
-    setActiveTab('Dashboard');
-    localStorage.removeItem('userProfile');
-    localStorage.removeItem('driverProfile');
+    setActiveTab("Dashboard");
+    localStorage.removeItem("userProfile");
+    localStorage.removeItem("driverProfile");
   };
 
   // Fetch dashboard data when authenticated as admin
@@ -129,7 +134,7 @@ function App() {
       setDonors(leaderboard);
       setActivityFeed(activity);
     } catch (err) {
-      console.error('Error loading dashboard data:', err);
+      console.error("Error loading dashboard data:", err);
     } finally {
       setLoading(false);
     }
@@ -148,56 +153,80 @@ function App() {
       setDonors(leaderboard);
       setActivityFeed(activity);
     } catch (err) {
-      console.error('Error refreshing dashboard:', err);
+      console.error("Error refreshing dashboard:", err);
     }
   };
 
   useEffect(() => {
-    if (!isAuthenticated || portalType !== 'admin') return;
+    if (!isAuthenticated || portalType !== "admin") return;
     loadDashboardData();
   }, [isAuthenticated, portalType]);
 
   const renderContent = () => {
-    if (loading && activeTab === 'Dashboard') {
+    if (loading && activeTab === "Dashboard") {
       return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
-          <div style={{ color: 'var(--text-secondary)', fontSize: '1.1rem' }}>Loading dashboard...</div>
+        <div className="loading-container">
+          <div className="loading-spinner" />
+          <span className="loading-text">Loading dashboard…</span>
         </div>
       );
     }
 
     switch (activeTab) {
-      case 'Dashboard':
+      case "Dashboard":
         return (
           <>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
-              <button 
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginBottom: "1rem",
+              }}
+            >
+              <button
+                className="customize-btn"
                 onClick={() => setIsCustomizeOpen(true)}
-                style={{ background: 'var(--bg-card)', color: 'var(--text-primary)', border: '1px solid var(--border)', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer' }}
               >
                 ⚙️ Customize Layout
               </button>
             </div>
-            {dashboardLayout.filter(l => l.visible).map(layout => {
-              if (layout.id === 'kpi') return <KPICards key="kpi" data={kpiData} onTabChange={setActiveTab} />;
-              if (layout.id === 'leads') return <LeadsTable key="leads" leads={whatsappLeads} onLeadsChange={refreshLeads} />;
-              if (layout.id === 'bottom') return (
-                <div key="bottom" className="bottom-section">
-                  <Leaderboard donors={donors} />
-                  <ActivityFeed activities={activityFeed} />
-                </div>
-              );
-              return null;
-            })}
+            {dashboardLayout
+              .filter((l) => l.visible)
+              .map((layout) => {
+                if (layout.id === "kpi")
+                  return (
+                    <KPICards
+                      key="kpi"
+                      data={kpiData}
+                      onTabChange={setActiveTab}
+                    />
+                  );
+                if (layout.id === "leads")
+                  return (
+                    <LeadsTable
+                      key="leads"
+                      leads={whatsappLeads}
+                      onLeadsChange={refreshLeads}
+                    />
+                  );
+                if (layout.id === "bottom")
+                  return (
+                    <div key="bottom" className="bottom-section">
+                      <Leaderboard donors={donors} />
+                      <ActivityFeed activities={activityFeed} />
+                    </div>
+                  );
+                return null;
+              })}
           </>
         );
-      case 'Pickups':
+      case "Pickups":
         return <PickupsView />;
-      case 'Donors':
+      case "Donors":
         return <DonorsView />;
-      case 'Leaderboard':
+      case "Leaderboard":
         return <Leaderboard donors={donors} />;
-      case 'Reports':
+      case "Reports":
         return <ReportsView />;
       default:
         return null;
@@ -205,12 +234,12 @@ function App() {
   };
 
   const handleDragStart = (e, index) => {
-    e.dataTransfer.setData('sourceIndex', index);
+    e.dataTransfer.setData("sourceIndex", index);
   };
   const handleDragOver = (e) => e.preventDefault();
   const handleDrop = (e, targetIndex) => {
-    const sourceIndex = e.dataTransfer.getData('sourceIndex');
-    if (sourceIndex === '') return;
+    const sourceIndex = e.dataTransfer.getData("sourceIndex");
+    if (sourceIndex === "") return;
     const items = [...dashboardLayout];
     const [reorderedItem] = items.splice(sourceIndex, 1);
     items.splice(targetIndex, 0, reorderedItem);
@@ -224,11 +253,11 @@ function App() {
 
   // ── Not authenticated ──
   if (!isAuthenticated) {
-    if (portalType === 'driver') {
+    if (portalType === "driver") {
       return (
         <DriverLoginView
           onDriverLogin={handleDriverLogin}
-          onSwitchToAdmin={() => setPortalType('admin')}
+          onSwitchToAdmin={() => setPortalType("admin")}
         />
       );
     }
@@ -236,26 +265,27 @@ function App() {
       <LoginView
         onLoginSuccess={handleLoginSuccess}
         onEmailLogin={handleEmailLogin}
-        onSwitchToDriver={() => setPortalType('driver')}
+        onSwitchToDriver={() => setPortalType("driver")}
       />
     );
   }
 
   // ── Authenticated as driver ──
-  if (portalType === 'driver' && driverProfile) {
+  if (portalType === "driver" && driverProfile) {
     return <DriverDashboard driver={driverProfile} onLogout={handleLogout} />;
   }
 
   // ── Authenticated as admin ──
   return (
     <div className="dashboard">
-      <Header 
-        activeTab={activeTab} 
-        onTabChange={setActiveTab} 
+      <AmbientBackground />
+      <Header
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
         userProfile={userProfile}
         onLogout={handleLogout}
         theme={theme}
-        toggleTheme={() => setTheme(t => t === 'light' ? 'dark' : 'light')}
+        toggleTheme={() => setTheme((t) => (t === "light" ? "dark" : "light"))}
         onAddDataClick={() => setIsDataEntryOpen(true)}
         onImportDataClick={() => setIsDataImportOpen(true)}
       />
@@ -265,32 +295,108 @@ function App() {
 
       {/* Customize Layout Modal */}
       {isCustomizeOpen && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div style={{ background: 'var(--bg-card)', padding: '1.5rem', borderRadius: '12px', width: '300px', border: '1px solid var(--border)' }}>
-            <h3 style={{ marginBottom: '1rem', color: 'var(--text-primary)' }}>Customize Dashboard</h3>
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>Drag to reorder. Toggle eye icon for visibility.</p>
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              background: "var(--bg-card)",
+              padding: "1.5rem",
+              borderRadius: "12px",
+              width: "300px",
+              border: "1px solid var(--border)",
+            }}
+          >
+            <h3 style={{ marginBottom: "1rem", color: "var(--text-primary)" }}>
+              Customize Dashboard
+            </h3>
+            <p
+              style={{
+                fontSize: "0.8rem",
+                color: "var(--text-muted)",
+                marginBottom: "1rem",
+              }}
+            >
+              Drag to reorder. Toggle eye icon for visibility.
+            </p>
             {dashboardLayout.map((item, index) => (
-              <div 
+              <div
                 key={item.id}
                 draggable
                 onDragStart={(e) => handleDragStart(e, index)}
                 onDragOver={handleDragOver}
                 onDrop={(e) => handleDrop(e, index)}
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.8rem', background: 'var(--bg-primary)', marginBottom: '0.5rem', borderRadius: '6px', cursor: 'move', border: '1px solid var(--border)' }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "0.8rem",
+                  background: "var(--bg-primary)",
+                  marginBottom: "0.5rem",
+                  borderRadius: "6px",
+                  cursor: "move",
+                  border: "1px solid var(--border)",
+                }}
               >
                 <span>{item.title}</span>
-                <button onClick={() => toggleVisibility(index)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem' }}>
-                  {item.visible ? '👁️' : '🚫'}
+                <button
+                  onClick={() => toggleVisibility(index)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    fontSize: "1.1rem",
+                  }}
+                >
+                  {item.visible ? "👁️" : "🚫"}
                 </button>
               </div>
             ))}
-            <button onClick={() => setIsCustomizeOpen(false)} style={{ width: '100%', padding: '0.8rem', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: '6px', marginTop: '1rem', cursor: 'pointer' }}>Done</button>
+            <button
+              onClick={() => setIsCustomizeOpen(false)}
+              style={{
+                width: "100%",
+                padding: "0.8rem",
+                background: "var(--accent)",
+                color: "#fff",
+                border: "none",
+                borderRadius: "6px",
+                marginTop: "1rem",
+                cursor: "pointer",
+              }}
+            >
+              Done
+            </button>
           </div>
         </div>
       )}
 
-      {isDataEntryOpen && <DataEntryModal onClose={() => setIsDataEntryOpen(false)} onSubmit={() => { setIsDataEntryOpen(false); refreshLeads(); }} />}
-      {isDataImportOpen && <DataImportModal onClose={() => setIsDataImportOpen(false)} onSubmit={() => { setIsDataImportOpen(false); refreshLeads(); }} />}
+      {isDataEntryOpen && (
+        <DataEntryModal
+          onClose={() => setIsDataEntryOpen(false)}
+          onSubmit={() => {
+            setIsDataEntryOpen(false);
+            refreshLeads();
+          }}
+        />
+      )}
+      {isDataImportOpen && (
+        <DataImportModal
+          onClose={() => setIsDataImportOpen(false)}
+          onSubmit={() => {
+            setIsDataImportOpen(false);
+            refreshLeads();
+          }}
+        />
+      )}
 
       <Footer />
       <ChatbotWidget theme={theme} />

@@ -1,3 +1,7 @@
+/* ═══════════════════════════════════════════
+   Login View — Premium Ambient + Glassmorphism
+   ═══════════════════════════════════════════ */
+
 .login-container {
   min-height: 100vh;
   display: flex;
@@ -5,6 +9,47 @@
   justify-content: center;
   background: var(--bg-primary);
   padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ambient gradient background for login */
+.login-container::before {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(108, 142, 239, 0.15) 0%, transparent 70%);
+  filter: blur(80px);
+  top: -10%;
+  right: -10%;
+  animation: loginOrb1 20s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.login-container::after {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.12) 0%, transparent 70%);
+  filter: blur(80px);
+  bottom: -10%;
+  left: -10%;
+  animation: loginOrb2 25s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes loginOrb1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-60px, 40px) scale(1.1); }
+}
+
+@keyframes loginOrb2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(50px, -30px) scale(1.08); }
 }
 
 .login-card {
@@ -14,11 +59,51 @@
   border: 1px solid var(--border);
   border-radius: 20px;
   padding: 2.5rem 2.2rem;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+  box-shadow: var(--shadow-xl);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  position: relative;
+  z-index: 1;
+  animation: loginCardEntry 0.6s var(--ease-out-expo) forwards;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+@keyframes loginCardEntry {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Animated gradient border on login card */
+.login-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 21px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    rgba(108, 142, 239, 0.25) 25%,
+    transparent 50%,
+    rgba(167, 139, 250, 0.2) 75%,
+    transparent 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding: 1px;
+  animation: gradient-rotate 8s linear infinite;
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .login-header { margin-bottom: 1.5rem; }
@@ -31,7 +116,11 @@
   margin-bottom: 1.5rem;
 }
 
-.login-logo .logo-icon { font-size: 2.5rem; }
+.login-logo .logo-icon {
+  font-size: 2.5rem;
+  animation: float 4s ease-in-out infinite;
+}
+
 .login-logo .logo-text { text-align: left; }
 
 .login-logo h1 {
@@ -86,7 +175,8 @@
   font-weight: 600;
   font-family: 'Inter', sans-serif;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s var(--ease-spring);
+  position: relative;
 }
 
 .auth-tab:hover {
@@ -117,6 +207,11 @@
   text-transform: uppercase;
   letter-spacing: 0.8px;
   margin-bottom: 0.35rem;
+  transition: color 0.2s ease;
+}
+
+.auth-field:focus-within label {
+  color: var(--accent);
 }
 
 .auth-field input {
@@ -129,12 +224,13 @@
   font-size: 0.85rem;
   font-family: 'Inter', sans-serif;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
 }
 
 .auth-field input:focus {
   border-color: var(--accent-border);
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  box-shadow: 0 0 0 3px var(--accent-soft), 0 0 16px rgba(108, 142, 239, 0.08);
+  transform: translateY(-1px);
 }
 
 .auth-field input::placeholder {
@@ -161,6 +257,11 @@
   font-size: 1rem;
   padding: 0.2rem;
   line-height: 1;
+  transition: transform 0.2s var(--ease-spring);
+}
+
+.password-toggle:hover {
+  transform: translateY(-50%) scale(1.15);
 }
 
 /* Password requirements */
@@ -178,11 +279,12 @@
 .req-item {
   font-size: 0.68rem;
   color: var(--text-muted);
-  transition: color 0.2s;
+  transition: all 0.3s var(--ease-spring);
 }
 
 .req-item.met {
   color: #4ade80;
+  transform: scale(1.02);
 }
 
 /* Error / Success */
@@ -196,6 +298,15 @@
   margin-bottom: 0.9rem;
   text-align: left;
   line-height: 1.5;
+  animation: shakeError 0.4s ease;
+}
+
+@keyframes shakeError {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
 }
 
 .auth-success {
@@ -207,6 +318,7 @@
   border-radius: 8px;
   margin-bottom: 0.9rem;
   text-align: left;
+  animation: fadeInUp 0.3s var(--ease-out-expo) forwards;
 }
 
 /* Submit button */
@@ -221,12 +333,36 @@
   font-weight: 700;
   font-family: 'Inter', sans-serif;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s var(--ease-spring);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Shimmer on submit */
+.auth-submit::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.12) 50%,
+    transparent 60%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+  pointer-events: none;
 }
 
 .auth-submit:hover {
   filter: brightness(1.1);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(108, 142, 239, 0.3);
+}
+
+.auth-submit:active {
+  transform: translateY(0) scale(0.98);
+  transition-duration: 0.1s;
 }
 
 .auth-submit:disabled {
@@ -234,6 +370,11 @@
   color: var(--text-muted);
   cursor: not-allowed;
   transform: none;
+  box-shadow: none;
+}
+
+.auth-submit:disabled::before {
+  display: none;
 }
 
 /* ─── Divider ─── */
@@ -287,5 +428,19 @@
   .login-card {
     padding: 1.8rem 1.4rem;
     border-radius: 14px;
+  }
+}
+
+/* ─── Reduced Motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  .login-container::before,
+  .login-container::after {
+    animation: none !important;
+  }
+  .login-card::before {
+    animation: none !important;
+  }
+  .auth-error {
+    animation: none !important;
   }
 }

@@ -5,17 +5,57 @@
   justify-content: center;
   background: linear-gradient(135deg, #0a1628 0%, #0d2137 50%, #0a1628 100%);
   padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.driver-login-container::before {
+  content: '';
+  position: absolute;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(13, 148, 136, 0.12) 0%, transparent 70%);
+  filter: blur(80px);
+  top: -10%; right: -10%;
+  animation: driverOrb1 20s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.driver-login-container::after {
+  content: '';
+  position: absolute;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(45, 212, 191, 0.1) 0%, transparent 70%);
+  filter: blur(80px);
+  bottom: -10%; left: -10%;
+  animation: driverOrb2 25s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes driverOrb1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-50px, 30px) scale(1.1); }
+}
+
+@keyframes driverOrb2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, -25px) scale(1.08); }
 }
 
 .driver-login-card {
   background: rgba(22, 24, 32, 0.9);
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 20px;
   padding: 2.5rem;
   width: 100%;
   max-width: 420px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-xl);
+  position: relative;
+  z-index: 1;
+  animation: loginCardEntry 0.6s var(--ease-out-expo) forwards;
 }
 
 .driver-login-header {
@@ -89,11 +129,19 @@
 .driver-submit {
   width: 100%; padding: 0.8rem; border-radius: 10px; border: none;
   background: linear-gradient(135deg, #0d9488, #14b8a6); color: #fff;
-  font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.3s;
-  margin-top: 0.5rem;
+  font-size: 0.9rem; font-weight: 600; cursor: pointer;
+  transition: all 0.25s var(--ease-spring);
+  margin-top: 0.5rem; position: relative; overflow: hidden;
 }
-.driver-submit:hover { filter: brightness(1.1); transform: translateY(-1px); }
-.driver-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.driver-submit::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.12) 50%, transparent 60%);
+  background-size: 200% 100%; animation: shimmer 3s linear infinite; pointer-events: none;
+}
+.driver-submit:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(13, 148, 136, 0.3); }
+.driver-submit:active { transform: translateY(0) scale(0.98); }
+.driver-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+.driver-submit:disabled::before { display: none; }
 
 .auth-divider {
   display: flex;

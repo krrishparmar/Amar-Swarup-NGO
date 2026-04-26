@@ -1,9 +1,19 @@
+/* ═══════════════════════════════════════════
+   Activity Feed — Timeline + Slide Animations
+   ═══════════════════════════════════════════ */
+
 .activity-feed {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 16px;
   overflow: hidden;
   min-width: 280px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--duration-slow) ease;
+}
+
+.activity-feed:hover {
+  box-shadow: var(--shadow-md);
 }
 
 .feed-header {
@@ -24,12 +34,23 @@
   gap: 0.45rem;
 }
 
+/* ─── Enhanced Pulse Dot with Ring ─── */
 .pulse-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
   background: var(--success);
+  position: relative;
   animation: pulse-teal 2.5s ease-in-out infinite;
+}
+
+.pulse-dot::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1.5px solid var(--success);
+  animation: pulse-ring 2.5s ease-in-out infinite;
 }
 
 @keyframes pulse-teal {
@@ -51,26 +72,49 @@
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+  position: relative;
 }
 
+/* ─── Timeline Connector ─── */
+.feed-list::before {
+  content: '';
+  position: absolute;
+  left: 1.5rem;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    var(--border) 10%,
+    var(--border) 90%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+/* ─── Feed Items — Slide in from right ─── */
 .feed-item {
   padding: 0.75rem 0.85rem;
   border-radius: 8px;
   background: transparent;
   border: 1px solid transparent;
-  transition: all 0.15s;
-  animation: fadeInFeed 0.35s ease forwards;
+  transition: all 0.25s var(--ease-spring);
+  animation: fadeInFeed 0.4s var(--ease-out-expo) forwards;
   opacity: 0;
+  position: relative;
 }
 
 .feed-item:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.025);
   border-color: var(--border);
+  transform: translateX(4px);
+  box-shadow: var(--shadow-sm);
 }
 
 @keyframes fadeInFeed {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
 .feed-item-top {
@@ -80,7 +124,17 @@
   margin-bottom: 0.35rem;
 }
 
-.feed-donor { font-weight: 600; color: var(--text-primary); font-size: 0.8rem; }
+.feed-donor {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.8rem;
+  transition: color 0.2s ease;
+}
+
+.feed-item:hover .feed-donor {
+  color: var(--accent);
+}
+
 .feed-time { font-size: 0.65rem; color: var(--text-muted); }
 
 .feed-item-bottom {
@@ -106,6 +160,11 @@
   font-weight: 600;
   white-space: nowrap;
   flex-shrink: 0;
+  transition: transform 0.2s var(--ease-spring);
+}
+
+.feed-item:hover .feed-waste {
+  transform: scale(1.05);
 }
 
 .feed-weight {

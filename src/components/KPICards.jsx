@@ -1,8 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
+import useScrollReveal from '../hooks/useScrollReveal';
+import useTilt from '../hooks/useTilt';
 import './KPICards.css';
 
 function AnimatedCounter({ end, duration = 2000, suffix = '' }) {
   const [count, setCount] = useState(0);
+  const [done, setDone] = useState(false);
   const ref = useRef(null);
   const started = useRef(false);
 
@@ -11,13 +14,18 @@ function AnimatedCounter({ end, duration = 2000, suffix = '' }) {
       ([entry]) => {
         if (entry.isIntersecting && !started.current) {
           started.current = true;
+          setDone(false);
           const startTime = performance.now();
           const animate = (now) => {
             const elapsed = now - startTime;
             const progress = Math.min(elapsed / duration, 1);
             const eased = 1 - Math.pow(1 - progress, 3);
             setCount(Math.floor(eased * end));
-            if (progress < 1) requestAnimationFrame(animate);
+            if (progress < 1) {
+              requestAnimationFrame(animate);
+            } else {
+              setDone(true);
+            }
           };
           requestAnimationFrame(animate);
         }
@@ -29,14 +37,38 @@ function AnimatedCounter({ end, duration = 2000, suffix = '' }) {
   }, [end, duration]);
 
   return (
-    <span ref={ref} className="kpi-value">
+    <span ref={ref} className={`kpi-value${done ? ' counting-done' : ''}`}>
       {count.toLocaleString()}{suffix}
     </span>
   );
 }
 
+function KPICard({ kpi, index, filter, getFilteredValue, getFilteredLabel, onTabChange, tabMap }) {
+  const tilt = useTilt({ maxTilt: 4, scale: 1.03, speed: 500 });
+
+  return (
+    <div
+      className="kpi-card fade-in-up"
+      style={{ animationDelay: `${index * 0.08}s` }}
+      onClick={() => onTabChange && onTabChange(tabMap[kpi.label] || 'Dashboard')}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => e.key === 'Enter' && onTabChange && onTabChange(tabMap[kpi.label] || 'Dashboard')}
+      onMouseMove={tilt.onMouseMove}
+      onMouseEnter={tilt.onMouseEnter}
+      onMouseLeave={tilt.onMouseLeave}
+    >
+      <div className="kpi-icon">{kpi.icon}</div>
+      <AnimatedCounter end={getFilteredValue(kpi.value)} suffix={kpi.suffix} key={filter + kpi.value} />
+      <span className="kpi-label">{getFilteredLabel(kpi.label)}</span>
+      <div className="kpi-shine"></div>
+    </div>
+  );
+}
+
 export default function KPICards({ data, onTabChange }) {
   const [filter, setFilter] = useState('Monthly');
+  const { ref: sectionRef, isVisible } = useScrollReveal({ threshold: 0.1 });
 
   if (!data || data.length === 0) {
     return (
@@ -68,7 +100,11 @@ export default function KPICards({ data, onTabChange }) {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+    <div
+      ref={sectionRef}
+      className={`scroll-reveal${isVisible ? ' is-visible' : ''}`}
+      style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+    >
       <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
         <select 
           value={filter} 
@@ -82,20 +118,16 @@ export default function KPICards({ data, onTabChange }) {
       </div>
       <section className="kpi-section">
         {data.map((kpi, index) => (
-          <div
+          <KPICard
             key={kpi.label}
-            className="kpi-card fade-in-up"
-            style={{ animationDelay: `${index * 0.08}s` }}
-            onClick={() => onTabChange && onTabChange(tabMap[kpi.label] || 'Dashboard')}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => e.key === 'Enter' && onTabChange && onTabChange(tabMap[kpi.label] || 'Dashboard')}
-          >
-            <div className="kpi-icon">{kpi.icon}</div>
-            <AnimatedCounter end={getFilteredValue(kpi.value)} suffix={kpi.suffix} key={filter + kpi.value} />
-            <span className="kpi-label">{getFilteredLabel(kpi.label)}</span>
-            <div className="kpi-shine"></div>
-          </div>
+            kpi={kpi}
+            index={index}
+            filter={filter}
+            getFilteredValue={getFilteredValue}
+            getFilteredLabel={getFilteredLabel}
+            onTabChange={onTabChange}
+            tabMap={tabMap}
+          />
         ))}
       </section>
     </div>

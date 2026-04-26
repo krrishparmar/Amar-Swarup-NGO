@@ -157,6 +157,11 @@ def webhook():
     msg_lower = message.lower().strip()
 
     # ── Check for exit at any point ──
+    try:
+        with open('webhook.log', 'a') as f:
+            f.write(f"{datetime.now()}: Incoming from {phone}: '{message}' (Step: {user_sessions.get(phone, {}).get('step', 'New')})\n")
+    except:
+        pass
     if msg_lower == 'exit':
         if phone in user_sessions:
             del user_sessions[phone]

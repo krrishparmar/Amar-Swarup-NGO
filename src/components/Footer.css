@@ -1,7 +1,31 @@
+/* ═══════════════════════════════════════════
+   Footer — Gradient Border + Hover Effects
+   ═══════════════════════════════════════════ */
+
 .dashboard-footer {
   margin-top: 2rem;
   border-top: 1px solid var(--border);
   padding: 1.75rem 2rem;
+  position: relative;
+}
+
+/* Animated gradient top border */
+.dashboard-footer::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(108, 142, 239, 0.15) 20%,
+    rgba(167, 139, 250, 0.2) 50%,
+    rgba(108, 142, 239, 0.15) 80%,
+    transparent 100%
+  );
+  pointer-events: none;
 }
 
 .footer-content { text-align: center; }
@@ -27,7 +51,26 @@
 .footer-link {
   color: var(--text-muted);
   text-decoration: none;
-  transition: color 0.2s;
+  transition: all 0.25s var(--ease-spring);
+  position: relative;
 }
 
-.footer-link:hover { color: var(--accent); }
+.footer-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--accent);
+  transition: width 0.3s var(--ease-out-expo);
+}
+
+.footer-link:hover {
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.footer-link:hover::after {
+  width: 100%;
+}
