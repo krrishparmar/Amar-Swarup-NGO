@@ -44,7 +44,13 @@ app.register_blueprint(drivers_bp)
 
 # Startup
 with app.app_context():
-    db.create_all()
+    try:
+        db.create_all()
+        print("Database connected and tables created successfully!")
+    except Exception as e:
+        import traceback
+        print("DATABASE ERROR:")
+        traceback.print_exc()
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5001)
