@@ -13,12 +13,18 @@ from routes.drivers import drivers_bp
 
 app = Flask(__name__)
 
+@app.route('/')
+def home():
+    return "Amar Swarup API is running!"
+
 # Configuration
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    'DATABASE_URL',
-    'sqlite:///' + os.path.join(basedir, 'instance', 'amar_swarup.db')
-)
+db_url = os.environ.get('DATABASE_URL')
+
+if db_url and db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url or ('sqlite:///' + os.path.join(basedir, 'instance', 'amar_swarup.db'))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
 
